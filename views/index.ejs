@@ -1,0 +1,164 @@
+﻿<!DOCTYPE html>
+<html>
+ <head>
+ <title>Intro to asf and MongoDB</title>
+ <!--<link rel="stylesheet" href="style.css"> -->
+ <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+
+ <style>
+ 	@media screen and (min-width: 678px){
+ 	body{
+ 		font-size: 16px;
+ 	}
+ 	.mb-3{
+ 		display: flex;
+ 		flex-direction: column;
+ 		width: 80%;
+ 		margin-left: auto;
+ 		margin-right: auto;
+ 		margin-top: 10px;
+ 	}
+ 	label{
+ 		margin-top: 10px;
+ 	}
+ 	input[type="submit"] {
+ 		margin-top: 20px;
+ 		width: 100%;
+ 		height: 90px;
+ 		font-size: 2rem;
+ 	}
+ 	input[type="text"] {
+ 		margin-top: 20px;
+ 		width: 100%;
+ 		height: 90px;
+ 		font-size: 2rem;
+ 	}
+ 	label{
+ 		font-size: 2rem;
+ 	}
+ 	/*navbar styling*/
+ 	.nav-wrapper{
+ 		width: 100%;
+ 		background-color: #FFFFFF;
+ 		height: 150px;
+ 		display: flex;
+ 		justify-content: space-between;
+ 		box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
+
+ 	}
+ 	.brand-logo{
+ 		font-size: 2rem;
+ 	}
+ 	.right{
+ 		display: flex;
+ 		align-items: center;
+ 		font-size: 2.5rem;
+ 		gap: 50px;
+ 		margin-right: 20px;
+ 	}
+ 	li{
+ 		list-style-type: none;
+ 		font-size: 3rem;
+ 	}
+ 	#cpf-invalido{
+ 		color: red;
+ 		text-align: center;
+ 		margin-top: 2rem;
+ 		font-size: 2rem;
+ 	}
+ }
+ 
+ </style>
+ 	 	
+ </head>
+ 
+ <body>
+  <nav>
+    <div class="nav-wrapper">
+      <a href="#" class="brand-logo">Logo</a>
+      <ul id="nav-mobile" class="right hide-on-med-and-down">
+        <li><a href="/">Início</a></li>
+        <li><a href="/pesquisa">Pesquisa</a></li>
+      </ul>
+    </div>
+  </nav>	
+
+ <div class="mb-3">
+ <form method="post" action="/addname">
+    <label for="firstName">Digite o nome</label><br>
+    <input type="text" name="firstName" required>
+    <br>
+    <p id="firstName-empty"></p>
+    <label for="secondName">Digite sobrenome</label>
+    <input type="text" name="lastName" required>
+    <p id="secondName-empty"><p>
+    <br>
+    <label for="cpf">Digite o CPF</label>
+    <input type="text" name="cpf" id="cpf" placeholder="" onkeyup="validateCpf()">
+    <br>
+    <p id="cpf-invalido">as</p>
+    <br>
+    <label for="dividaUm">Digite valor</label>
+    <input type="text" name="dividaUm" id="dividaUm" placeholder="">
+    <label for="dividaDois">Digite valor</label>
+    <input type="text" name="dividaDois" id="dividaDois" placeholder="">
+    <input type="submit" value="Adicionar registro" class="btn btn-outline-primary">
+ </form>
+
+ <br>
+ <br>
+ <br>
+ <br>
+ <br>
+ <br>
+</div>
+<script type="text/javascript">
+
+	//valida cpf no formulário
+	function validateCpf(){
+		const cpf = document.getElementById("cpf").value;
+	    let array = [];
+	    let array2 = [];
+	    let sum = 0;
+	    let sum2 = 0;
+	    let primeiro = null;
+	    let segundo = null;
+	    const fakeList = ['00000000000','11111111111','22222222222','33333333333','44444444444','55555555555','66666666666','77777777777','88888888888','99999999999']
+	    
+	    for (i = 0; i < 9; i++){
+	        array.push(parseInt(cpf[i]))
+	    } for (i = 0; i < 9; i++){
+	        sum += array[i] * (10-i)
+	    } if (parseInt(sum%11) <2){
+	        primeiro = 0;
+	    } else {
+	        primeiro = (11-(sum%11))
+	    } 
+	    
+	    let array3 = array2.concat(array);
+	    array3.push(primeiro);
+	    for (i = 0; i< 10; i++){
+	        sum2 +=array3[i] * (11-i)
+	    }
+	     if (parseInt(sum2%11) <2){
+	        segundo = 0;
+	    } else {
+	        segundo = (11-(sum2%11))
+	    }
+
+
+	    if (fakeList.filter((e) => e === cpf).length === 1 
+	    	|| Number(cpf[10]) !== primeiro && Number(cpf[10]) !== segundo){
+	        document.getElementById("cpf-invalido").innerHTML = "cpf inválido";
+		    setTimeout(()=>{
+		    	document.getElementById("cpf-invalido").value = "";
+		    },2000)    
+	    }
+
+	}
+		
+
+</script>
+</body>
+</html>

@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html>
+ <head>
+ <title>Intro to asf and MongoDB</title>
+ <!--<link rel="stylesheet" href="style.css"> -->
+ <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,200;1,100&family=Oswald:wght@200;300;400;500;600&family=Roboto:wght@100;300;400&display=swap" rel="stylesheet">
+
+
+ <style>
+ 	@media screen and (min-width: 678px){
+ 	body{
+ 		font-family: 'Roboto', sans-serif;
+ 		font-weight: 300;
+ 	}
+
+ 	.nav-wrapper{
+ 		width: 100%;
+ 		background-color: #FFFFFF;
+ 		height: 150px;
+ 		display: flex;
+ 		justify-content: space-between;
+ 		box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
+
+ 	}
+ 	.brand-logo{
+ 		font-size: 2rem;
+ 	}
+ 	.right{
+ 		display: flex;
+ 		align-items: center;
+ 		font-size: 2.5rem;
+ 		gap: 50px;
+ 		margin-right: 20px;
+ 	}
+ 	li{
+ 		list-style-type: none;
+ 		font-size: 3rem;
+ 	}
+ 	a:active{
+ 		list-style-type: none;
+ 		color: #fff;
+ 	}
+ 	.content{
+ 		margin-top: 80px;
+ 		display: flex;
+ 		flex-direction: column;
+ 		align-items: center;
+
+ 	}
+ 	input[type="text"]{
+ 		width: 80%;
+ 		height: 100px;
+ 		font-size: 2.5rem;
+ 	}
+ 	h1{
+ 		font-size: 5rem;
+ 	}
+ 	#searchResults{
+ 		margin-top: 100px;
+ 		font-size: 4rem;
+ 		width: 80%;
+ 		text-align: center;
+ 	}
+ 	}
+ 
+ </style>
+ 	 	
+ </head>
+ 
+ <body>
+ <nav>
+    <div class="nav-wrapper">
+      <a href="#" class="brand-logo">Logo</a>
+      <ul id="nav-mobile" class="right hide-on-med-and-down">
+        <li><a href="/">Início</a></li>
+        <li><a href="badges.html">Pesquisa</a></li>
+      </ul>
+    </div>
+  </nav>
+ 
+ <div class="content">
+ 	<h1>Pesquisa de clientes</h1>
+
+	 <br>
+	 <br>
+	 <input type="text" id="search-box" onkeyup="sendData(this)" placeholder="Digite o nome do cliente">
+	 <section id="searchResults">
+	 </section>
+	 <br>
+	 <br>
+	 <br>
+	 <br>
+</div>
+<script type="text/javascript">
+		function sendData(e){
+		if (e.value !== "total") {
+			const searchResults = document.getElementById('searchResults');
+			fetch('getUsers',{
+				method: 'POST',
+				headers: {'content-type': 'application/json'},
+				body: JSON.stringify({payload: e.value})
+			}).then(res => res.json()).then(data => {
+				let payload = data.payload;
+				searchResults.innerHTML = '';
+				if (payload.length < 1){
+					searchResults.innerHTML = '<p>Nome não encontrado</p>';
+					return;
+				}
+				payload.forEach((item,index)=>{
+					if (index <0) searchResults.innerHTML += '<hr>';
+					searchResults.innerHTML += `<p>${item.firstName} ${item.lastName} .. Total de dívidas R$ ${item.dividaUm+item.dividaDois}.</p>`;
+				});
+					return;
+			});
+		} else {
+			const searchResults = document.getElementById('searchResults');
+			fetch('getTotalDivida',{
+				method: 'POST',
+				headers: {'content-type': 'application/json'},
+				body: JSON.stringify({payload: e.value})
+			}).then(res => res.json()).then(data => {
+				let payload = data.payload;
+				searchResults.innerHTML = '';
+				if (payload.length < 1){
+					searchResults.innerHTML = '<p>Nome não encontrado</p>';
+					return;
+				}
+				const total = payload.reduce((acc, obj) =>{
+					return acc + obj.dividaUm + obj.dividaDois
+				},0);
+				searchResults.innerHTML += `<p>Total de dívidas R$ ${total}.</p>`
+				
+				/*payload.forEach((item,index)=>{
+					if (index <0) searchResults.innerHTML += '<hr>';
+					searchResults.innerHTML += `<p>Total de dívidas R$ ${item.dividaUm+item.dividaDois}.</p>`;
+				});*/
+					/*return total;
+					this is the previous solution. i have no idea how it works
+					*/
+			});
+		}
+	}
+
+</script>
+</body>
+</html>
